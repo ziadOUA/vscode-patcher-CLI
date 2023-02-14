@@ -23,7 +23,7 @@ start = Figlet(font='univers', width=120)
 
 done = False
 valid = False
-selected_mode = None
+selected_command = None
 
 today = date.today()
 today = today.strftime('%d/%m/%Y')
@@ -55,7 +55,6 @@ def vscode_patcher():
         print('Not yet Implemented')
     if selected_command == '4':
         print('Not yet Implemented')
-
 
 
 def config_loader():
@@ -160,6 +159,7 @@ def custom_css_patch():
     user_css_path_prompt()
     user_css_loading()
     vscode_css_backup()
+    user_css_inject()
 
 
 def user_css_path_prompt():
@@ -211,6 +211,21 @@ def vscode_css_backup():
         success_msg()
     except FileExistsError:
         print(f'{Fore.CYAN} Backup already exists{Fore.RESET}')
+
+
+def user_css_inject():
+    global vscode_css
+    vscode_css = open(vscode_css_path, 'r+')
+    vscode_css_content = vscode_css.read()
+    file_status_msg('Injecting the custom CSS into', Path(vscode_css_path).name)
+    if '/* PATCH */\n' in vscode_css_content:
+        print(f'{Fore.CYAN} Already patched{Fore.RESET}')
+    else:
+        vscode_css.write('/* PATCH */\n')
+        vscode_css.write(user_css_content)
+        success_msg()
+    vscode_css.close()
+
 
 
 if __name__ == '__main__':
