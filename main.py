@@ -30,7 +30,7 @@ today = date.today()
 today = today.strftime('%d/%m/%Y')
 
 commands_table = [['1. Patch VSCode with a custom CSS stylesheet (File)', '2. Remove custom CSS patch', '3. Patch VSCode with custom JS (File, NOT YET IMPLEMENTED)'],
-                  ['4. Quick patches (NOT YET IMPLEMENTED)', '5. Reload CSS backup (NOT YET IMPLEMENTED)']]
+                  ['4. Quick patches (NOT YET IMPLEMENTED)', '5. Patch product.json (NOT YET IMPLEMENTED)', '6. Reload CSS backup (NOT YET IMPLEMENTED)']]
 
 vscode_css_path = ''
 vscode_css = ''
@@ -42,21 +42,17 @@ config_file = ''
 config_data = ''
 
 
-def vscode_patcher():
+def vs_patcher():
     global selected_command
     config_loader()
     vscode_css_retriever()
-    print(f'{Back.CYAN + Fore.BLACK} VSPatch is now ready to patch {Back.RESET + Fore.RESET}')
+    print(f'{Back.CYAN + Fore.BLACK} VSPatch is ready to patch {Back.RESET + Fore.RESET}')
     commands_prompt()
     if selected_command == '1':
         custom_css_patch()
     if selected_command == '2':
         remove_existing_patch()
-    if selected_command == '3':
-        print('Not yet Implemented')
-    if selected_command == '4':
-        print('Not yet Implemented')
-    if selected_command == '5':
+    if selected_command in ['3', '4', '5', '6']:
         print('Not yet Implemented')
 
 
@@ -148,15 +144,7 @@ def commands_prompt():
     print(tabulate(commands_table, tablefmt="presto"))
     while not valid:
         selected_command = str(input('>>> '))
-        if selected_command == '1':
-            valid = True
-        if selected_command == '2':
-            valid = True
-        if selected_command == '3':
-            valid = True
-        if selected_command == '4':
-            valid = True
-        if selected_command == '4':
+        if selected_command in ['1', '2', '3', '4', '5', '6']:
             valid = True
     valid = False
 
@@ -262,12 +250,17 @@ def remove_existing_patch():
             output.write(line)
     if not patch_found:
         failure_msg()
+        print(f'{Fore.YELLOW}No patch was found{Fore.RESET}')
     vscode_css.close()
     output.close()
     if patch_found:
         file_status_msg('Removing', 'the patch')
         os.replace(f'{Path(vscode_css_path).parent}\\temp.txt', f'{Path(vscode_css_path).parent}\\{Path(vscode_css_path).name}')
         success_msg()
+    try:
+        os.remove(f'{Path(vscode_css_path).parent}\\temp.txt')
+    except FileNotFoundError:
+        pass
     patch_found = False
 
 
@@ -278,7 +271,7 @@ if __name__ == '__main__':
         done = False
         print(start.renderText('VSPatcher'))
         new_line()
-        vscode_patcher()
+        vs_patcher()
         new_line()
         while not valid:
             is_user_done = input('Leave ?\n Y: yes\n N: no\n>>> ')
