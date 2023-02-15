@@ -214,12 +214,26 @@ def user_css_inject():
     file_status_msg('Injecting the custom CSS into', Path(vscode_css_path).name)
     if '\n/* PATCH */\n' in vscode_css_content:
         print(f'{Fore.CYAN} Already patched{Fore.RESET}')
-        remove_existing_patch_prompt()
+        replace_existing_patch_prompt()
     else:
         vscode_css.write('\n/* PATCH */\n')
         vscode_css.write(user_css_content)
         success_msg()
     vscode_css.close()
+
+
+def replace_existing_patch_prompt():
+    global valid
+    new_line()
+    while not valid:
+        replace_patch = input('Replace existing patch ?\n Y: yes\n N: no\n>>> ')
+        if replace_patch in ['y', 'Y']:
+            remove_existing_patch_prompt()
+            user_css_inject()
+            valid = True
+        elif replace_patch in ['n', 'N']:
+            valid = True
+    valid = False
 
 
 def remove_existing_patch_prompt():
