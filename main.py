@@ -23,13 +23,14 @@ start = Figlet(font='univers', width=120)
 
 done = False
 valid = False
+patch_found = False
 selected_command = None
 
 today = date.today()
 today = today.strftime('%d/%m/%Y')
 
-commands_table = [['1. Patch VSCode with a custom CSS stylesheet (File)', '2. Patch VSCode with custom JS (File, NOT YET IMPLEMENTED)', '3. Quick patches (NOT YET IMPLEMENTED)'],
-                  ['4. Reload CSS backup (NOT YET IMPLEMENTED)']]
+commands_table = [['1. Patch VSCode with a custom CSS stylesheet (File)', '2. Remove custom CSS patch', '3. Patch VSCode with custom JS (File, NOT YET IMPLEMENTED)'],
+                  ['4. Quick patches (NOT YET IMPLEMENTED)', '5. Reload CSS backup (NOT YET IMPLEMENTED)']]
 
 vscode_css_path = ''
 vscode_css = ''
@@ -50,10 +51,12 @@ def vscode_patcher():
     if selected_command == '1':
         custom_css_patch()
     if selected_command == '2':
-        print('Not yet Implemented')
+        remove_existing_patch()
     if selected_command == '3':
         print('Not yet Implemented')
     if selected_command == '4':
+        print('Not yet Implemented')
+    if selected_command == '5':
         print('Not yet Implemented')
 
 
@@ -117,7 +120,8 @@ def vscode_css_retriever():
     if config_data['vscode_css_path'] is None:
         try:
             file_status_msg('Searching', 'workbench.desktop.main.css')
-            vscode_css_path = os.path.expanduser('~') + "\AppData\Local\Programs\Microsoft VS Code\\resources\\app\out\\vs\workbench\workbench.desktop.main.css"
+            vscode_css_path = os.path.expanduser(
+                '~') + "\AppData\Local\Programs\Microsoft VS Code\\resources\\app\out\\vs\workbench\workbench.desktop.main.css"
             vscode_css = open(vscode_css_path)
             vscode_css.close()
             success_msg()
@@ -149,6 +153,8 @@ def commands_prompt():
         if selected_command == '2':
             valid = True
         if selected_command == '3':
+            valid = True
+        if selected_command == '4':
             valid = True
         if selected_command == '4':
             valid = True
@@ -218,14 +224,51 @@ def user_css_inject():
     vscode_css = open(vscode_css_path, 'r+')
     vscode_css_content = vscode_css.read()
     file_status_msg('Injecting the custom CSS into', Path(vscode_css_path).name)
-    if '/* PATCH */\n' in vscode_css_content:
+    if '\n/* PATCH */\n' in vscode_css_content:
         print(f'{Fore.CYAN} Already patched{Fore.RESET}')
+        remove_existing_patch_prompt()
     else:
-        vscode_css.write('/* PATCH */\n')
+        vscode_css.write('\n/* PATCH */\n')
         vscode_css.write(user_css_content)
         success_msg()
     vscode_css.close()
 
+
+def remove_existing_patch_prompt():
+    global valid
+    new_line()
+    while not valid:
+        remove_patch = input('Remove existing patch ?\n Y: yes\n N: no\n>>> ')
+        if remove_patch in ['y', 'Y']:
+            valid = True
+            remove_existing_patch()
+        elif remove_patch in ['n', 'N']:
+            valid = True
+    valid = False
+
+
+def remove_existing_patch():
+    global vscode_css, patch_found
+    vscode_css = open(vscode_css_path, 'r')
+    vscode_css_content = vscode_css.readlines()
+    output = open(f'{Path(vscode_css_path).parent}\\temp.txt', 'w')
+    print('Finding the patch...', end='')
+    for line in vscode_css_content:
+        if '/* PATCH */' in line:
+            patch_found = True
+            success_msg()
+            break
+        else:
+            output.write(line)
+    if not patch_found:
+        failure_msg()
+    vscode_css.close()
+    output.close()
+    if patch_found:
+        file_status_msg('Removing', 'the patch')
+        os.replace(f'{Path(vscode_css_path).parent}\\temp.txt', f'{Path(vscode_css_path).parent}\\{Path(vscode_css_path).name}')
+        success_msg()
+    patch_found = False
 
 
 if __name__ == '__main__':
