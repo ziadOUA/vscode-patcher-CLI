@@ -53,6 +53,17 @@
     border-radius: 8px;
 }
 
+.monaco-workbench .notifications-list-container,
+.monaco-workbench .notifications-list-container .monaco-scrollable-element,
+.monaco-workbench>.notifications-toasts .notification-toast-container > .notification-toast {
+    border-radius: 8px !important;
+}
+
+.monaco-sash.vertical:before {
+    content: '';
+    border-radius: 100vw 100vw 0px 0px;
+}
+
 .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fit {
     border-radius: 15px 15px 0 0;
 }
