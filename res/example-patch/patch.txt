@@ -64,7 +64,8 @@
 
 .monaco-menu,
 .context-view > .monaco-scrollable-element,
-.menubar-menu-items-holder {
+.menubar-menu-items-holder,
+.scm-view .scm-editor-container {
     border-radius: 8px !important;
 }
 
@@ -77,6 +78,11 @@
 .monaco-sash.vertical:before {
     content: '';
     border-radius: 100vw 100vw 0px 0px;
+}
+
+.monaco-select-box-dropdown-container.visible {
+    border-radius: 8px !important;
+    margin-top: 8px;
 }
 
 .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fit {
