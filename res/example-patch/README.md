@@ -12,4 +12,4 @@ If you still use light themes, I suggest you using *Catppuccin Latte*.
 
 <img src="../preview/example-patch2.png">
 
-I also deactivated the breadcrumbs, and added hover transitions.
+I also deactivated the breadcrumbs, the menu and status bar for a cleaner UI.
