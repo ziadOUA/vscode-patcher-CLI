@@ -1,5 +1,5 @@
 # VSPatcher (CLI)
-<p>A light-weight Python program to patch VSCode and customize its appearance</p>
+<p>🩹 A light-weight Python program to patch VSCode and customize its appearance.</p>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="res/preview/vspatch1.png">
