@@ -137,7 +137,8 @@
     border-top: none !important;
 }
 
-.part.sidebar.left {
+.part.sidebar.left,
+.nosidebar .editor-group-container.empty.active {
     border-radius: 15px 0 0 15px;
 }
 
